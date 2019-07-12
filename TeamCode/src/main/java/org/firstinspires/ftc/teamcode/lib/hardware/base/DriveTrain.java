@@ -87,6 +87,15 @@ public class DriveTrain {
 
   }
 
+  public void strafe(double power){
+
+      fl.setPower(power);
+      fr.setPower(-power);
+      bl.setPower(-power);
+      br.setPower(power);
+
+  }
+
   /**converts movement_y, movement_x, movement_turn into motor powers */
   public void applyMovement() {
     long currTime = SystemClock.uptimeMillis();
@@ -139,4 +148,20 @@ public class DriveTrain {
     return worldAngle_rad;
   }
 
+  public void manualControl(double lx, double ly, double rx){
+
+      double flP, frP, brP, blP;
+
+      flP = ly + rx + lx;
+      frP = ly - rx - lx;
+      blP = ly + rx - lx;
+      brP = ly - rx + lx;
+
+      fl.setPower(Range.clip(flP, -1, 1));
+      fr.setPower(Range.clip(frP, -1, 1));
+      bl.setPower(Range.clip(blP, -1, 1));
+      br.setPower(Range.clip(brP, -1, 1));
+
+
+  }
 }

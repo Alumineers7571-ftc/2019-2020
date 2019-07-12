@@ -75,7 +75,36 @@ public class MyPosition {
     return angle;
   }
 
-  public static void PosCalc7571(double l, double r, double a){
+    public static void PosCalc2Wheel(double r, double a){
+        currPos_r = r;
+        currPos_a = -a;
+
+        double wheelRightCurrent = currPos_r;
+        double wheelAuxCurrent = currPos_a;
+
+        double rightCM = wheelRightCurrent * cmPerTick;
+        double auxCM = wheelAuxCurrent * cmPerTick;
+
+        double wheelRightDelta = wheelRightCurrent - wheelRightLast;
+        double wheelAuxDelta = wheelAuxCurrent - wheelAuxLast;
+
+        double rightDeltaCM = wheelRightDelta * cmPerTick;
+        double auxDeltaCM = wheelAuxDelta * cmPerTick;
+
+        //worldXPosition += ((leftDeltaCM + rightDeltaCM)/2);
+        //worldYPosition += auxDeltaCM;
+
+        worldYPosition = rightCM;
+        worldXPosition = auxCM;
+
+        //save the last positions for later
+        wheelRightLast = wheelRightCurrent;
+        wheelAuxLast = wheelAuxCurrent;
+
+    }
+
+
+    public static void PosCalc7571(double l, double r, double a){
       currPos_l = l;
       currPos_r = r;
       currPos_a = a;

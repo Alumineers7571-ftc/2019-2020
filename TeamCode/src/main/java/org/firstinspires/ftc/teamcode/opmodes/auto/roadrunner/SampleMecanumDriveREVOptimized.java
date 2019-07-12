@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto.roadrunner;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
+import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -54,7 +55,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
 
         motors = Arrays.asList(leftFront, rightFront, leftRear, rightRear);
 
-        localizer = new StandardTrackingWheelLocalizer(hub, motors);
+        //localizer
 
         for (ExpansionHubMotor motor : motors) {
             // TODO: decide whether or not to use the built-in velocity PID

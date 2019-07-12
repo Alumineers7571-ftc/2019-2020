@@ -17,6 +17,7 @@ public class PIDController{
 	private double maxIOutput=0;
 	private double maxError=0;
 	private double errorSum=0;
+	private double currentError = 0;
 
 	private double maxOutput=0; 
 	private double minOutput=0;
@@ -259,13 +260,13 @@ public class PIDController{
 		}
 
 		// Do the simple parts of the calculations
-		double error=setpoint-actual;
+		currentError=setpoint-actual;
 
 		// Calculate F output. Notice, this depends only on the setpoint, and not the error. 
 		Foutput=F*setpoint;
 
 		// Calculate P term
-		Poutput=P*error;   
+		Poutput=P*currentError;
 
 		// If this is our first time running this, we don't actually _have_ a previous input or output. 
 		// For sensor, sanely assume it was exactly where it is now.
@@ -296,22 +297,22 @@ public class PIDController{
 
 		// Figure out what we're doing with the error.
 		if(minOutput!=maxOutput && !bounded(output, minOutput,maxOutput) ){
-			errorSum=error; 
+			errorSum=currentError;
 			// reset the error sum to a sane level
 			// Setting to current error ensures a smooth transition when the P term 
 			// decreases enough for the I term to start acting upon the controller
 			// From that point the I term will build up as would be expected
 		}
 		else if(outputRampRate!=0 && !bounded(output, lastOutput-outputRampRate,lastOutput+outputRampRate) ){
-			errorSum=error; 
+			errorSum=currentError;
 		}
 		else if(maxIOutput!=0){
-			errorSum=constrain(errorSum+error,-maxError,maxError);
+			errorSum=constrain(errorSum+currentError,-maxError,maxError);
 			// In addition to output limiting directly, we also want to prevent I term 
 			// buildup, so restrict the error directly
 		}
 		else{
-			errorSum+=error;
+			errorSum+=currentError;
 		}
 
 		// Restrict output to our specified output and ramp limits
@@ -458,4 +459,8 @@ public class PIDController{
 			if(F<0) F*=-1;
 		}
 	}
+
+	public double getError(){
+	    return currentError;
+    }
 }

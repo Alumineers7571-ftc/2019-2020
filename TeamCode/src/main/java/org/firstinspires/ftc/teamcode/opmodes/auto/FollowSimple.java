@@ -2,18 +2,25 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.lib.hardware.base.DriveTrain;
 import org.firstinspires.ftc.teamcode.lib.hardware.base.RevMotor;
 import org.firstinspires.ftc.teamcode.lib.hardware.base.Robot;
 import org.firstinspires.ftc.teamcode.lib.movement.MyPosition;
+import org.firstinspires.ftc.teamcode.lib.movement.Point;
+import org.firstinspires.ftc.teamcode.lib.recording.InputManager;
+import org.firstinspires.ftc.teamcode.lib.util.PIDController;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 import org.openftc.revextensions2.RevExtensions2;
 
+import java.io.File;
+
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.PosCalc7571;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldXPosition;
+import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldYPosition;
 
 @Autonomous
 public class FollowSimple extends OpMode {
@@ -26,6 +33,18 @@ public class FollowSimple extends OpMode {
 
     private RevMotor[] motors;
 
+    int robo = 0;
+
+    PIDController PIDx = new PIDController(0.05, 0, 0);
+    PIDController PIDy = new PIDController(0.05, 0, 0);
+
+    double xPower = 0;
+    double yPower = 0;
+
+    double xTarget = 0;
+    double yTarget = 0;
+
+    InputManager inputManager = new InputManager();
 
     @Override
     public void init(){
@@ -40,31 +59,72 @@ public class FollowSimple extends OpMode {
 
         MyPosition.setPosition(0, 0, 0);
 
+        inputManager.setupPlayback(new File("/sdcard/Download/InputFiles/inputTest.txt"));
+
+
+        PIDx.setOutputLimits(-1, 1);
+
+        PIDy.setOutputLimits(-1, 1);
+
     }
 
     @Override
     public void loop(){
 
+        //ElapsedTime timer = new ElapsedTime();
+
         getRevBulkData();
 
         //dt.applyMovement();
 
-        MyPosition.PosCalc7571(
+        MyPosition.PosCalc2Wheel(
                 dt.fr.getCurrentPosition(),
-                dt.fl.getCurrentPosition(),
                 dt.bl.getCurrentPosition());
 
-        if((worldXPosition <= -30)){
-            dt.setThrottle(0);
-        } else {
-            dt.setThrottle(0.4);
+        applyMovement();
+
+        /*switch(robo){
+            case 0: {
+                xTarget = 50;
+                yTarget = 30;
+
+                if(PIDx.getError() <= 2 && PIDy.getError() <= 2){
+                    robo++;
+                }
+                break;
+            }
+            case 1: {
+                xTarget = 0;
+                yTarget = 0;
+
+
+            }
+        }*/
+
+        for(Point point: inputManager.getPoints()){
+            xTarget = point.x;
+            yTarget = point.y;
+
+            telemetry.addData("point: ", point);
+            telemetry.update();
         }
 
         telemetry.addLine("wx count: " + worldXPosition);
+        telemetry.addLine("wy: " + worldYPosition);
+        telemetry.addLine("xPower: " + xPower);
+        telemetry.addLine("yPower: " + yPower);
         telemetry.update();
+    }
 
+    public void applyMovement(){
+
+        xPower = PIDx.getOutput(worldXPosition, xTarget);
+        yPower = PIDy.getOutput(worldYPosition, yTarget);
+
+        dt.manualControl(xPower, yPower, 0);
 
     }
+
 
     public void getRevBulkData() {
 //        boolean needToPollMaster = !AutoFeeder.canPollMasterAtLowerRate ||

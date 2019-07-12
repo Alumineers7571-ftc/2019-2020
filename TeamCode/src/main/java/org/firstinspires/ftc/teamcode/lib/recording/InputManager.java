@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.teamcode.lib.recording;
 
+import org.firstinspires.ftc.teamcode.lib.movement.Point;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldXPosition;
+import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldYPosition;
 
 
 public class InputManager {
@@ -15,10 +21,8 @@ public class InputManager {
     public FileReader fileReader;
     public BufferedReader bufferedReader;
 
-    double[] leftFrontValues;
-    double[] leftBackValues;
-    double[] rightFrontValues;
-    double[] rightBackValues;
+    double[] worldXPoints;
+    double[] worldYPoints;
 
     //double ly, rx, lx;
 
@@ -35,6 +39,12 @@ public class InputManager {
     int m1Ticks = 0, m2Ticks = 0, m3Ticks = 0, m4Ticks = 0, m5Ticks = 0, m6Ticks = 0, m7Ticks = 0, m8Ticks = 0;
 
     int s1Pos, s2Pos, s3Pos, s4Pos, s5Pos, s6Pos, s7Pos, s8Pos, s9Pos, s10Pos, s11Pos, s12Pos;
+
+    double wx = 0;
+    double wy = 0;
+    double wr = 0;
+
+    ArrayList<Point> points = new ArrayList<>();
 
     int gyroPos;
 
@@ -70,6 +80,10 @@ public class InputManager {
 
     }
 
+    public InputManager(){
+
+    }
+
     public void setupRecording(File file){
 
         // Assume default encoding.
@@ -86,16 +100,13 @@ public class InputManager {
 
     }
 
-    public void writeInputs(//Robot robot
-    int i
-    ){
+    public void writeInputs(){
 
         try {
             //bufferedWriter.write(m1Ticks + ";" + m2Ticks + ";" + m3Ticks + ";" + m4Ticks + ";" + m5Ticks + ";" + m6Ticks + ";" + m7Ticks + ";" + m8Ticks + ";" + s1Pos + ";" + s2Pos + ";" + s3Pos + ";" + s4Pos + ";" + s5Pos + ";" + s6Pos + ";" + s7Pos + ";" + s8Pos + ";" + s9Pos + ";" + s10Pos + ";" + s11Pos + ";" + s12Pos + ";" + gyroPos);
-            bufferedWriter.write(i + " " + i);
+            bufferedWriter.write(worldYPosition + ";" + worldXPosition);
 
             bufferedWriter.newLine();
-            System.out.println(i);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,8 +119,8 @@ public class InputManager {
         String[] tempString;
         String line;
 
-        leftFrontValues = new double[50000];
-        rightFrontValues = new double[50000];
+        worldXPoints = new double[50000];
+        worldYPoints = new double[50000];
 
         try {
 
@@ -120,16 +131,10 @@ public class InputManager {
 
                 tempString = line.split(";");
 
-                m1Ticks = Integer.parseInt(tempString[0]);
-                m2Ticks = Integer.parseInt(tempString[1]);
-                m3Ticks = Integer.parseInt(tempString[2]);
-                m4Ticks = Integer.parseInt(tempString[3]);
-                m5Ticks = Integer.parseInt(tempString[4]);
-                m6Ticks = Integer.parseInt(tempString[5]);
-                m7Ticks = Integer.parseInt(tempString[6]);
-                m8Ticks = Integer.parseInt(tempString[7]);
+                double tempY = Double.parseDouble(tempString[0]);
+                double tempX = Double.parseDouble(tempString[1]);
 
-                gyroPos = Integer.parseInt(tempString[19]);
+                points.add(new Point(tempX, tempY));
 
                 countLines++;
             }
@@ -144,10 +149,11 @@ public class InputManager {
     }
 
     public void replayInputs(){
-        while(countReplays <= countLines) {
-            //dt.runMotorsIndiv(leftFrontValues[countReplays], rightFrontValues[countReplays], leftBackValues[countReplays], rightBackValues[countReplays]);
-            countReplays++;
-        }
+
+    }
+
+    public ArrayList<Point> getPoints(){
+        return points;
     }
 
     public void stopAndReset() {
