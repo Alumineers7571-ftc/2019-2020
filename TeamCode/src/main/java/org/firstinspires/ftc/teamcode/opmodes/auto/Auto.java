@@ -12,13 +12,14 @@ import java.util.ArrayList;
 import static org.firstinspires.ftc.teamcode.lib.movement.RobotMovement.followCurve;
 import static org.firstinspires.ftc.teamcode.opmodes.auto.Auto.AutoStates.*;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.*;
+import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.*;
 
 
 @Autonomous (group = "main")
 public class Auto extends Robot {
 
   public enum AutoStates{
-    START, END, MOVE1
+    START, END, MOVE1, MOVE2
   }
 
   AutoStates robo = START;
@@ -65,6 +66,15 @@ public class Auto extends Robot {
         robo = END;
         break;
 
+      }
+
+      case MOVE2:{
+
+        xTarget = 50;
+        yTarget = 60;
+
+        robo = END;
+        break;
       }
 
       case END: {

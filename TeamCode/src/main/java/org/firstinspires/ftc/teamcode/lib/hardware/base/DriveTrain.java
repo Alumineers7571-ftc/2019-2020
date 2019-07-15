@@ -9,9 +9,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.lib.movement.Point;
 import org.firstinspires.ftc.teamcode.lib.movement.Position;
+import org.firstinspires.ftc.teamcode.lib.recording.InputManager;
 import org.firstinspires.ftc.teamcode.lib.util.GlobalVars;
 import org.firstinspires.ftc.teamcode.lib.util.Math7571;
+import org.firstinspires.ftc.teamcode.lib.util.PIDController;
 
 import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.*;
 import static org.firstinspires.ftc.teamcode.lib.util.MathFunctions.AngleWrap;
@@ -20,7 +23,6 @@ import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.*;
 public class DriveTrain {
 
   public RevMotor fl, fr, bl, br;
-
 
   private OpMode opMode;
   private HardwareMap hardwareMap;
@@ -32,6 +34,14 @@ public class DriveTrain {
 
   //last update time
   private long lastUpdateTime = 0;
+
+  public static PIDController PIDx = new PIDController(0.05, 0, 0);
+  public static PIDController PIDy = new PIDController(0.05, 0, 0);
+
+  double xPower = 0;
+  double yPower = 0;
+
+  InputManager inputManager = new InputManager();
 
   public DriveTrain(){
 
@@ -65,6 +75,14 @@ public class DriveTrain {
 
   }
 
+  public void moveToPoint(Point point){
+
+    xTarget = point.x;
+    yTarget = point.y;
+
+  }
+
+
   public void driveInches(double distance){
     System.out.println("distance: " + distance);
   }
@@ -96,7 +114,7 @@ public class DriveTrain {
 
   }
 
-  /**converts movement_y, movement_x, movement_turn into motor powers */
+ /**converts movement_y, movement_x, movement_turn into motor powers */
   public void applyMovement() {
     long currTime = SystemClock.uptimeMillis();
     if(currTime - lastUpdateTime < 16){
@@ -135,7 +153,6 @@ public class DriveTrain {
     fr.setPower(fr_power_raw);
   }
 
-
   public double getXPos(){
     return worldXPosition;
   }
@@ -148,20 +165,4 @@ public class DriveTrain {
     return worldAngle_rad;
   }
 
-  public void manualControl(double lx, double ly, double rx){
-
-      double flP, frP, brP, blP;
-
-      flP = ly + rx + lx;
-      frP = ly - rx - lx;
-      blP = ly + rx - lx;
-      brP = ly - rx + lx;
-
-      fl.setPower(Range.clip(flP, -1, 1));
-      fr.setPower(Range.clip(frP, -1, 1));
-      bl.setPower(Range.clip(blP, -1, 1));
-      br.setPower(Range.clip(brP, -1, 1));
-
-
-  }
 }

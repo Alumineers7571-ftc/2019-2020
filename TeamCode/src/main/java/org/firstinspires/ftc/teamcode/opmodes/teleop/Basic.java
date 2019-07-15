@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.lib.hardware.base.Robot;
 import org.firstinspires.ftc.teamcode.lib.movement.MyPosition;
 
+import static org.firstinspires.ftc.teamcode.lib.movement.RobotMovement.manualControl;
+
 @TeleOp (group = "Basic")
 public class Basic extends Robot {
 
@@ -22,6 +24,8 @@ public class Basic extends Robot {
     @Override
     public void loop() {
         super.loop();
+
+        manualControl(gamepad1);
 
 
 

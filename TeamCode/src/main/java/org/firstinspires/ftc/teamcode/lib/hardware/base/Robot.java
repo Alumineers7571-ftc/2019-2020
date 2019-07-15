@@ -18,11 +18,12 @@ import org.openftc.revextensions2.RevExtensions2;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldAngle_rad;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldXPosition;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldYPosition;
+import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.atTarget;
+import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.xTarget;
+import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.yTarget;
 
 //@TeleOp
 public class Robot extends OpMode{
-
-  private PIDController pidRotate, pidDrive;
 
   private boolean isAuto = false;
 
@@ -37,19 +38,7 @@ public class Robot extends OpMode{
 
   private RevMotor[] motors;
 
-
-  DriveTrain dt = new DriveTrain();
-
-  private void initPID(){
-
-    pidRotate = new PIDController(0.001, 0, 0);
-    pidDrive = new PIDController(0.001, 0, 0);
-
-    pidRotate.setOutputLimits(1);
-    pidRotate.setSetpoint(0);
-
-  }
-
+  public DriveTrain dt = new DriveTrain();
 
   @Override
   public void init() {
@@ -63,7 +52,6 @@ public class Robot extends OpMode{
 
 
     dt.initMotors(motors);
-    initPID();
 
   }
 
@@ -83,10 +71,11 @@ public class Robot extends OpMode{
     dt.applyMovement();
     telemetry.addLine("movements applied!");
 
-    MyPosition.giveMePositions(
+    MyPosition.PosCalc2Wheel(
         dt.fr.getCurrentPosition(),
-        dt.fl.getCurrentPosition(),
         dt.bl.getCurrentPosition());
+
+    updateAtTarget();
 
     telemetry.addLine("positions set!");
 
@@ -108,6 +97,14 @@ public class Robot extends OpMode{
     this.mainGp = main;
     this.auxGp = aux;
 
+  }
+
+  private void updateAtTarget(){
+    if(((worldXPosition >= xTarget -2) && (worldXPosition <= xTarget+2)) && ((worldYPosition >= yTarget -2) && (worldYPosition <= yTarget+2))){
+      atTarget = true;
+    } else if(atTarget){
+      atTarget = false;
+    }
   }
 
   /**

@@ -21,6 +21,8 @@ import java.io.File;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.PosCalc7571;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldXPosition;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldYPosition;
+import static org.firstinspires.ftc.teamcode.lib.movement.RobotMovement.manualControl;
+import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.*;
 
 @Autonomous
 public class FollowSimple extends OpMode {
@@ -93,6 +95,7 @@ public class FollowSimple extends OpMode {
                 }
                 break;
             }
+
             case 1: {
                 xTarget = 0;
                 yTarget = 0;
@@ -118,10 +121,9 @@ public class FollowSimple extends OpMode {
 
     public void applyMovement(){
 
-        xPower = PIDx.getOutput(worldXPosition, xTarget);
-        yPower = PIDy.getOutput(worldYPosition, yTarget);
+        movement_x = PIDx.getOutput(worldXPosition, xTarget);
+        movement_y = PIDy.getOutput(worldYPosition, yTarget);
 
-        dt.manualControl(xPower, yPower, 0);
 
     }
 

@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 
+import static org.firstinspires.ftc.teamcode.lib.hardware.base.DriveTrain.PIDx;
+import static org.firstinspires.ftc.teamcode.lib.hardware.base.DriveTrain.PIDy;
 import static org.firstinspires.ftc.teamcode.lib.util.MathFunctions.AngleWrap;
 import static org.firstinspires.ftc.teamcode.lib.util.MathFunctions.lineCircleIntersection;
 
@@ -98,5 +100,28 @@ public class RobotMovement {
         movement_turn = Range.clip(gamepad.right_stick_x, -1, 1);
 
     }
+
+    public static void applyTarget(){
+
+        movement_x = PIDx.getOutput(worldXPosition, xTarget);
+        movement_y = PIDy.getOutput(worldYPosition, yTarget);
+
+
+    }
+
+    public static void applyTarget(Point point){
+
+        xTarget = point.x;
+        yTarget = point.y;
+
+        applyTarget();
+
+
+    }
+
+    public static void waitForTarget(){
+
+    }
+
 
 }
