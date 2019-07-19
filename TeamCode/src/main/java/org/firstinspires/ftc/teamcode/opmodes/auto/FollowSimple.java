@@ -18,7 +18,6 @@ import org.openftc.revextensions2.RevExtensions2;
 
 import java.io.File;
 
-import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.PosCalc7571;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldXPosition;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldYPosition;
 import static org.firstinspires.ftc.teamcode.lib.movement.RobotMovement.manualControl;
@@ -114,7 +113,7 @@ public class FollowSimple extends OpMode {
 
         telemetry.addLine("wx count: " + worldXPosition);
         telemetry.addLine("wy: " + worldYPosition);
-        telemetry.addLine("xPower: " + xPower);
+        telemetry.addLine("xTarget: " + xTarget);
         telemetry.addLine("yPower: " + yPower);
         telemetry.update();
     }
@@ -123,6 +122,7 @@ public class FollowSimple extends OpMode {
 
         movement_x = PIDx.getOutput(worldXPosition, xTarget);
         movement_y = PIDy.getOutput(worldYPosition, yTarget);
+
 
 
     }

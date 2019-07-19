@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.jetbrains.annotations.NotNull;
+
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
@@ -13,8 +13,6 @@ import org.openftc.revextensions2.RevBulkData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.firstinspires.ftc.teamcode.opmodes.auto.roadrunner.DriveConstants.encoderTicksToInches;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -43,6 +41,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     private ExpansionHubEx hub;
 
     private List<ExpansionHubMotor> motors;
+    ExpansionHubMotor fl, fr, bl;
 
     private List<Double> wheelPositions;
 
@@ -55,6 +54,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
 
         this.hub = hub;
         this.motors = motors;
+        fl = motors.get(0);
+        fr = motors.get(1);
+        bl = motors.get(2);
 
     }
 
@@ -63,19 +65,13 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     }
 
 
-    @NotNull
+
     @Override
     public List<Double> getWheelPositions() {
-        RevBulkData bulkData = hub.getBulkInputData();
-
-        if (bulkData == null) {
-            return Arrays.asList(0.0, 0.0, 0.0);
-        }
-
-        List<Double> wheelPositions = new ArrayList<>();
-        for (int i = 0; i <= 2; i++) {
-            wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(motors.get(i))));
-        }
-        return wheelPositions;
+        return Arrays.asList(
+            encoderTicksToInches(fl.getCurrentPosition()),
+            encoderTicksToInches(fr.getCurrentPosition()),
+            encoderTicksToInches(bl.getCurrentPosition())
+        );
     }
 }

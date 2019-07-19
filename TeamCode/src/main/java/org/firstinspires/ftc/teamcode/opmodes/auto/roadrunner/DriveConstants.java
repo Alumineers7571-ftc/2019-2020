@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto.roadrunner;
 
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.hardware.motors.NeveRest20Gearmotor;
+import com.qualcomm.hardware.motors.NeveRest40Gearmotor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 /*
@@ -17,8 +18,8 @@ public class DriveConstants {
      */
 
     private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
-    private static final double TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
+            MotorConfigurationType.getMotorType(NeveRest40Gearmotor.class);
+    private static final double TICKS_PER_REV = 1440;
 
     public static double WHEEL_RADIUS = 4; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
@@ -29,9 +30,9 @@ public class DriveConstants {
             Math.PI / 2, Math.PI / 2, 0.0
     );
 
-    public static double kV = 0;
-    public static double kA = 0;
-    public static double kStatic = 0;
+    public static double kV = 5.73307;
+    public static double kA = 0.00676;
+    public static double kStatic = 0.07145;
 
 
     public static double encoderTicksToInches(int ticks) {

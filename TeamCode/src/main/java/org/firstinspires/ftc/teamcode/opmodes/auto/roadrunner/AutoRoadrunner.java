@@ -8,10 +8,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 @Autonomous
 public class AutoRoadrunner extends OpMode {
+
+    SampleMecanumDriveREVOptimized dt;
+
     @Override
     public void init() {
 
-//        MecanumKinematics.wheelToRobotVelocities( , 17, 13.5);
+        dt = new SampleMecanumDriveREVOptimized(hardwareMap);
 
 
     }
@@ -20,6 +23,10 @@ public class AutoRoadrunner extends OpMode {
     public void loop() {
 
 
+
+
+        telemetry.addLine("heading: " + dt.getRawExternalHeading());
+        telemetry.addLine("wheel pos: " + dt.getWheelPositions());
 
     }
 }

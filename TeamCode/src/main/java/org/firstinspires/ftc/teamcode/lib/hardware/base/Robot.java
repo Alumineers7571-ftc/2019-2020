@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.lib.hardware.base;
 
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.lib.movement.MyPosition;
 import org.firstinspires.ftc.teamcode.lib.movement.Position;
 import org.firstinspires.ftc.teamcode.lib.util.OpMode7571;
@@ -15,17 +17,21 @@ import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
 import org.openftc.revextensions2.RevExtensions2;
 
+import java.text.DecimalFormat;
+
+import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.AngleWrap;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldAngle_rad;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldXPosition;
 import static org.firstinspires.ftc.teamcode.lib.movement.MyPosition.worldYPosition;
-import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.atTarget;
-import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.xTarget;
-import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.yTarget;
+import static org.firstinspires.ftc.teamcode.lib.movement.RobotMovement.applyTarget;
+import static org.firstinspires.ftc.teamcode.lib.util.GlobalVars.*;
 
 //@TeleOp
 public class Robot extends OpMode{
 
   private boolean isAuto = false;
+
+  public DecimalFormat df = new DecimalFormat("###.###");
 
   private RevBulkData revExpansionMasterBulkData;
 
@@ -51,7 +57,9 @@ public class Robot extends OpMode{
     motors = new RevMotor[]{new RevMotor((ExpansionHubMotor) hardwareMap.get("fl"),true), new RevMotor((ExpansionHubMotor) hardwareMap.get("fr"),true), new RevMotor((ExpansionHubMotor) hardwareMap.get("bl"),true), new RevMotor((ExpansionHubMotor) hardwareMap.get("br"),true)};
 
 
+
     dt.initMotors(motors);
+    dt.initGyro(hardwareMap.get(BNO055IMU.class, "imu"));
 
   }
 
@@ -59,35 +67,43 @@ public class Robot extends OpMode{
   public void loop() {
 
     getRevBulkData();
-
-    telemetry.addLine("got bulk data!");
-
+/*
     if(!isAuto){
       getGamepads(gamepad1, gamepad2);
-      telemetry.addLine("got gamepads!");
+    }*/
+
+    if(roboState != RobotStates.FINISHED) {
+      dt.applyMovement();
     }
 
+    worldAngle_rad = Double.parseDouble(df.format(AngleWrap(dt.getGyroRotation(AngleUnit.RADIANS))));
 
-    dt.applyMovement();
-    telemetry.addLine("movements applied!");
-
-    MyPosition.PosCalc2Wheel(
+    MyPosition.PosCalcNiceArnav(
         dt.fr.getCurrentPosition(),
         dt.bl.getCurrentPosition());
 
+    worldXPosition = Double.parseDouble(df.format(worldXPosition));
+    worldYPosition = Double.parseDouble(df.format(worldYPosition));
+
+
+    //updateAutoState();
     updateAtTarget();
 
-    telemetry.addLine("positions set!");
-
+    //telemetry.addLine("positions set!");
+/*
     telemetry.addLine("wx: " + worldXPosition);
     telemetry.addLine("wy: " + worldYPosition);
-    telemetry.addLine("wa: " + worldAngle_rad);
+    telemetry.addLine("wa: " + Math.toDegrees(worldAngle_rad));
+    telemetry.addLine("");
+    telemetry.addLine("r: " + dt.fr.getCurrentPosition());
+    telemetry.addLine("a: " + dt.bl.getCurrentPosition());
+    telemetry.addLine("");
+    telemetry.addLine("auto state: " + autoState);
+    telemetry.addLine("");
+    telemetry.addLine("robot state: " + roboState);
+    telemetry.addLine("strafe const: " + strafeConstant);
 
-    telemetry.addLine("fr: " + dt.fr.getCurrentPosition());
-    telemetry.addLine("fl: " + dt.fl.getCurrentPosition());
-    telemetry.addLine("bl: " + dt.bl.getCurrentPosition());
-
-    telemetry.update();
+    telemetry.update();*/
 
 
   }
@@ -100,13 +116,23 @@ public class Robot extends OpMode{
   }
 
   private void updateAtTarget(){
-    if(((worldXPosition >= xTarget -2) && (worldXPosition <= xTarget+2)) && ((worldYPosition >= yTarget -2) && (worldYPosition <= yTarget+2))){
-      atTarget = true;
+    if(((worldXPosition >= xTarget -mTolerance) && (worldXPosition <= xTarget+mTolerance)) && ((worldYPosition >= yTarget -mTolerance) && (worldYPosition <= yTarget+mTolerance)) && ((Math.toDegrees(worldAngle_rad) >= aTarget - aTolerance) && (Math.toDegrees(worldAngle_rad) <= aTarget +aTolerance))){
+      roboState = RobotStates.AT_TARGET;
     } else if(atTarget){
-      atTarget = false;
+      roboState = RobotStates.MOVING_TO_TARGET;
     }
   }
 
+  private void updateAutoState(){
+
+    if(roboState == RobotStates.AT_TARGET){
+
+      roboState = RobotStates.STOPPED;
+      auto++;
+
+    }
+
+  }
   /**
    * Gets all the data from the expansion hub in one command to increase loop times
    */

@@ -23,6 +23,7 @@ public class Auto extends Robot {
   }
 
   AutoStates robo = START;
+  ArrayList<CurvePoint> allPoints;
 
   @Override
   public void init(){
@@ -41,25 +42,28 @@ public class Auto extends Robot {
 
         MyPosition.setPosition(0, 0, 0);
 
+        allPoints = new ArrayList<>();
+
+        allPoints.add(new CurvePoint(20.0,  0.0, 25,
+            Math.toRadians(90),0.6));
+
+        allPoints.add(new CurvePoint(20.0,  20.0, 25,
+            Math.toRadians(90),0.6));
+
+        allPoints.add(new CurvePoint(0.0,  20.0, 25,
+            Math.toRadians(90),0.6));
+
+        allPoints.add(new CurvePoint(0.0,  0.0, 25,
+            Math.toRadians(90),0.6));
+
+        allPoints.add(new CurvePoint(0.0,  0.0, 25,
+            Math.toRadians(135),0.6));
+
         robo = MOVE1;
         break;
       }
 
       case MOVE1: {
-
-        ArrayList<CurvePoint> allPoints = new ArrayList<>();
-
-        allPoints.add(new CurvePoint(10.0,  0.0, 25,
-            Math.toRadians(90),0.6));
-
-        allPoints.add(new CurvePoint(10.0,  10.0, 25,
-            Math.toRadians(90),0.6));
-
-        allPoints.add(new CurvePoint(0.0,  10.0, 25,
-            Math.toRadians(90),0.6));
-
-        allPoints.add(new CurvePoint(0.0,  0.0, 25,
-            Math.toRadians(90),0.6));
 
         followCurve(allPoints, Math.toRadians(90));
 
@@ -69,9 +73,6 @@ public class Auto extends Robot {
       }
 
       case MOVE2:{
-
-        xTarget = 50;
-        yTarget = 60;
 
         robo = END;
         break;

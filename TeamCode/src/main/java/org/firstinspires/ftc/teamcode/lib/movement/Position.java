@@ -4,18 +4,14 @@ public class Position{
 
     private Point current, target;
 
-    double x, y, rot;
+    double x, y, a;
 
-    public Position(Point current){
+    public Position(double x, double y, double a){
 
-        this.current = current;
+        this.x = x;
+        this.y = y;
+        this.a = a;
 
-    }
-
-
-    public Position(Point current, Point target){
-        this.current = current;
-        this.target = target;
     }
 
     public double getX(){
@@ -26,8 +22,8 @@ public class Position{
         return y;
     }
 
-    public double getRot(){
-        return rot;
+    public double getA(){
+        return a;
     }
 
     public Point getCurrent(){
@@ -43,51 +39,6 @@ public class Position{
         current = point;
 
     }
-
-    public void setTarget(Point point){
-
-        target = point;
-
-    }
-
-    public Point getMovements(){
-        if(target.getX() > current.getX()){
-            x = target.getX() - current.getX();
-        } else if(target.getX() < current.getX()){
-            x = -(current.getX() - target.getX());
-        } else {
-            x = 0;
-        }
-        if(target.getY() > current.getY()){
-            y = target.getY() - current.getY();
-        } else if(target.getY() < current.getY()){
-            y = -(current.getY() - target.getY());
-        } else {
-            y = 0;
-        }
-
-        return new Point(x,y);
-    }
-
-    public Point getMovements(Point current, Point target){
-        if(target.getX() > current.getX()){
-            x = target.getX() - current.getX();
-        } else if(target.getX() < current.getX()){
-            x = -(current.getX() - target.getX());
-        } else {
-            x = 0;
-        }
-        if(target.getY() > current.getY()){
-            y = target.getY() - current.getY();
-        } else if(target.getY() < current.getY()){
-            y = -(current.getY() - target.getY());
-        } else {
-            y = 0;
-        }
-
-        return new Point(x,y);
-    }
-
 
     public String toString(){
 
